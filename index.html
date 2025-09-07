@@ -114,6 +114,7 @@ async function getMedia(){
     if(videos.length){
       const best = videos.find(v => /hd_no_watermark/i.test(v.quality)) || videos[0];
       if(best && best.url){
+        const filename = `video_${best.quality || 'default'}.mp4`.replace(/\s+/g,'_');
         html += `
         <div>
           <h4 style="color:var(--accent)">Video</h4>
@@ -121,8 +122,8 @@ async function getMedia(){
             <source src="${best.url}" type="video/mp4">
           </video>
           <a class="download-btn"
-             href="/api/download?url=${encodeURIComponent(best.url)}&filename=video.mp4">
-             Download
+             href="/api/download?url=${encodeURIComponent(best.url)}&filename=${filename}">
+             Download (${filename})
           </a>
         </div>`;
       }
@@ -134,25 +135,16 @@ async function getMedia(){
       html += `<div><h4 style="color:var(--accent)">Gambar</h4>`;
       images.forEach((img,i)=>{
         if(img.url){
+          const filename = `image_${i+1}.jpg`;
           html += `
           <img src="${img.url}" alt="image_${i+1}" style="margin-top:8px">
           <a class="download-btn"
-             href="/api/download?url=${encodeURIComponent(img.url)}&filename=image_${i+1}.jpg">
-             Download
+             href="/api/download?url=${encodeURIComponent(img.url)}&filename=${filename}">
+             Download (${filename})
           </a>`;
         }
       });
       html += `</div>`;
-    } else if (data.result.thumbnail && isDirectMedia(data.result.thumbnail)) {
-      html += `
-      <div>
-        <h4 style="color:var(--accent)">Thumbnail</h4>
-        <img src="${data.result.thumbnail}" alt="thumbnail" style="margin-top:8px">
-        <a class="download-btn"
-           href="/api/download?url=${encodeURIComponent(data.result.thumbnail)}&filename=thumbnail.jpg">
-           Download
-        </a>
-      </div>`;
     }
 
     // audio
@@ -162,13 +154,14 @@ async function getMedia(){
       audios.forEach((a,i)=>{
         if(a.url){
           const ext = a.extension || 'mp3';
+          const filename = `audio_${i+1}.${ext}`;
           html += `
           <audio controls>
             <source src="${a.url}" type="audio/${ext}">
           </audio>
           <a class="download-btn"
-             href="/api/download?url=${encodeURIComponent(a.url)}&filename=audio_${i+1}.${ext}">
-             Download
+             href="/api/download?url=${encodeURIComponent(a.url)}&filename=${filename}">
+             Download (${filename})
           </a>`;
         }
       });
