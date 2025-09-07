@@ -8,26 +8,21 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Gagal fetch file" });
     }
 
+    // Ambil data sebagai buffer
+    const buffer = Buffer.from(await response.arrayBuffer());
+
+    // Ambil content-type asli
+    const contentType = response.headers.get("content-type") || "application/octet-stream";
+
+    // Set header supaya browser download
+    res.setHeader("Content-Type", contentType);
+    res.setHeader("Content-Length", buffer.length);
     res.setHeader(
       "Content-Disposition",
       `attachment; filename="${filename || 'file'}"`
     );
-    res.setHeader(
-      "Content-Type",
-      response.headers.get("content-type") || "application/octet-stream"
-    );
 
-    // ✅ Convert ReadableStream ke Node.js readable
-    const reader = response.body.getReader();
-    const encoder = new TextEncoder();
-
-    // Stream chunk demi chunk
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      res.write(Buffer.from(value));
-    }
-    res.end();
+    res.end(buffer);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Terjadi error", detail: err.message });
