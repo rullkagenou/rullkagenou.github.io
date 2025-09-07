@@ -3,20 +3,13 @@ export default async function handler(req, res) {
     const { url, filename = "file" } = req.query;
     if (!url) return res.status(400).json({ error: "url wajib diisi" });
 
-    // ambil direct mp4 dari API pihak ketiga
-    const api = await fetch(`https://api.finix-id.my.id/download/aio?url=${encodeURIComponent(url)}`);
-    const data = await api.json();
-    if (!data || !data.data || !data.data.play) {
-      return res.status(500).json({ error: "Gagal ambil link video" });
-    }
-    const videoUrl = data.data.play;
-
-    // fetch video langsung
-    const response = await fetch(videoUrl);
+    // ambil file dari direct link
+    const response = await fetch(url);
     if (!response.ok) return res.status(500).json({ error: "Gagal ambil file" });
 
-    res.setHeader("Content-Type", "video/mp4");
-    res.setHeader("Content-Disposition", `attachment; filename="${filename}.mp4"`);
+    // set header biar browser langsung unduh
+    res.setHeader("Content-Type", response.headers.get("content-type") || "application/octet-stream");
+    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
 
     response.body.pipe(res);
   } catch (e) {
