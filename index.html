@@ -63,7 +63,7 @@ input[type=text] {
     .btn-group .btn-primary{flex:1}
     .card{background:var(--card);padding:18px;border-radius:12px;margin-top:18px;box-shadow:0 8px 30px rgba(0,0,0,.45)}
     video,img,audio{width:100%;border-radius:10px;display:block;background:#000}
-    .download-btn{display:block;width:calc(100% - 4px);margin:8px auto 0;text-align:center;background:linear-gradient(90deg,#00bfff,#0066cc);color:white;padding:14px;border-radius:10px;font-size:16px;font-weight:700;text-decoration:none;box-sizing:border-box}
+    .download-btn{display:block;width:calc(100% - 4px);margin:8px auto 0;text-align:center;background:linear-gradient(90deg,#00bfff,#0066cc);color:white;padding:14px;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;border:none}
     .download-btn--alt{background:linear-gradient(90deg,#25D366,#1aa34a)}
     .muted{color:var(--muted);font-size:13px}
   </style>
@@ -125,6 +125,15 @@ async function pasteClipboard(){
   }
 }
 
+function downloadFile(url, filename){
+  const link = document.createElement("a");
+  link.href = `/api/download?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(filename)}`;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
 async function getMedia(){
   const url=document.getElementById('urlInput').value.trim();
   const result=document.getElementById('result');
@@ -150,11 +159,9 @@ async function getMedia(){
         <video controls muted playsinline>
           <source src="${best.url}" type="video/mp4">
         </video>
-        <a class="download-btn"
-           href="/api/download?url=${encodeURIComponent(best.url)}&filename=video.mp4"
-           target="_blank">
-           Download Video
-        </a>
+        <button class="download-btn" onclick="downloadFile('${best.url}','video.mp4')">
+          Download Video
+        </button>
       </div>`;
     }
 
@@ -164,11 +171,9 @@ async function getMedia(){
       images.forEach((img,i)=>{
         html+=`
         <img src="${img.url}" style="margin-top:8px">
-        <a class="download-btn"
-           href="/api/download?url=${encodeURIComponent(img.url)}&filename=image_${i+1}.jpg"
-           target="_blank">
-           Download Gambar
-        </a>`;
+        <button class="download-btn" onclick="downloadFile('${img.url}','image_${i+1}.jpg')">
+          Download Gambar
+        </button>`;
       });
       html+=`</div>`;
     }
@@ -182,11 +187,9 @@ async function getMedia(){
         <audio controls>
           <source src="${a.url}" type="audio/${ext}">
         </audio>
-        <a class="download-btn"
-           href="/api/download?url=${encodeURIComponent(a.url)}&filename=audio_${i+1}.${ext}"
-           target="_blank">
-           Download Audio
-        </a>`;
+        <button class="download-btn" onclick="downloadFile('${a.url}','audio_${i+1}.${ext}')">
+          Download Audio
+        </button>`;
       });
       html+=`</div>`;
     }
