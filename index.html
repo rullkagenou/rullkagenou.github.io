@@ -88,7 +88,6 @@ async function pasteClipboard(){
 }
 
 function isDirectMedia(url){
-  // filter supaya cuma url file, bukan halaman
   return /\.(mp4|mp3|m4a|jpg|jpeg|png|gif)(\?|$)/i.test(url) ||
          url.includes("tiktokcdn") || url.includes("fbcdn") || url.includes("cdninstagram");
 }
@@ -110,7 +109,7 @@ async function getMedia(){
     const medias = data.result.medias || [];
     let html = '';
 
-    // === VIDEO ===
+    // video
     const videos = medias.filter(m => m.type === 'video' && isDirectMedia(m.url));
     if(videos.length){
       const best = videos.find(v => /hd_no_watermark/i.test(v.quality)) || videos[0];
@@ -129,7 +128,7 @@ async function getMedia(){
       }
     }
 
-    // === IMAGE ===
+    // image
     const images = medias.filter(m => m.type === 'image' && isDirectMedia(m.url));
     if(images.length){
       html += `<div><h4 style="color:var(--accent)">Gambar</h4>`;
@@ -156,7 +155,7 @@ async function getMedia(){
       </div>`;
     }
 
-    // === AUDIO ===
+    // audio
     const audios = medias.filter(m => (m.type === 'audio' || ['mp3','m4a'].includes(m.extension)) && isDirectMedia(m.url));
     if(audios.length){
       html += `<div><h4 style="color:var(--accent)">Audio</h4>`;
