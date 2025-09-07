@@ -3,14 +3,27 @@ export default async function handler(req, res) {
   if (!url) return res.status(400).json({ error: "URL tidak ada" });
 
   try {
-    const response = await fetch(url);
-    if (!response.ok) return res.status(500).json({ error: "Gagal fetch file" });
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0" // penting biar banyak server gak nolak
+      }
+    });
 
-    res.setHeader("Content-Disposition", `attachment; filename="${filename || 'file'}"`);
-    res.setHeader("Content-Type", response.headers.get("content-type") || "application/octet-stream");
+    if (!response.ok) {
+      return res.status(500).json({ error: "Gagal fetch file" });
+    }
 
-    const buffer = await response.arrayBuffer();
-    res.send(Buffer.from(buffer));
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${filename || 'file'}"`
+    );
+    res.setHeader(
+      "Content-Type",
+      response.headers.get("content-type") || "application/octet-stream"
+    );
+
+    // ✅ stream langsung, bukan buffer
+    response.body.pipe(res);
   } catch (err) {
     res.status(500).json({ error: "Terjadi error", detail: err.message });
   }
