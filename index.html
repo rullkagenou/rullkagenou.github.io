@@ -74,7 +74,7 @@
 
   <script>
 function openAdmin(){
-  window.open("https://wa.me/6283892730732?text=Bang%20Rullz%20web%20nya%20eror", "_blank");
+  window.open("https://wa.me/6283892730732?text=Bang%20Rullz%20web%20nya%20eror", "_blank", "rel=noopener noreferrer");
 }
 
 async function pasteClipboard(){
@@ -116,8 +116,7 @@ async function getMedia(){
           <source src="${best.url}" type="video/mp4">
         </video>
         <a class="download-btn"
-           href="/api/download?url=${encodeURIComponent(best.url)}&filename=video.mp4"
-           download="video.mp4">
+           href="/api/download?url=${encodeURIComponent(best.url)}&filename=video.mp4">
            Download Video
         </a>
       </div>`;
@@ -128,10 +127,9 @@ async function getMedia(){
       html+=`<div><h4 style="color:var(--accent)">Gambar</h4>`;
       images.forEach((img,i)=>{
         html+=`
-        <img src="${img.url}" style="margin-top:8px">
+        <img src="${img.url}" alt="image_${i+1}" style="margin-top:8px">
         <a class="download-btn"
-           href="/api/download?url=${encodeURIComponent(img.url)}&filename=image_${i+1}.jpg"
-           download="image_${i+1}.jpg">
+           href="/api/download?url=${encodeURIComponent(img.url)}&filename=image_${i+1}.jpg">
            Download Gambar
         </a>`;
       });
@@ -148,8 +146,7 @@ async function getMedia(){
           <source src="${a.url}" type="audio/${ext}">
         </audio>
         <a class="download-btn"
-           href="/api/download?url=${encodeURIComponent(a.url)}&filename=audio_${i+1}.${ext}"
-           download="audio_${i+1}.${ext}">
+           href="/api/download?url=${encodeURIComponent(a.url)}&filename=audio_${i+1}.${ext}">
            Download Audio
         </a>`;
       });
