@@ -3,23 +3,32 @@ export default async function handler(req, res) {
   if (!url) return res.status(400).json({ error: "URL tidak ada" });
 
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0 Safari/537.36",
+        "Referer": "https://www.tiktok.com/",
+        "Range": "bytes=0-"
+      },
+      redirect: "follow"
+    });
+
     if (!response.ok) {
       return res.status(500).json({ error: "Gagal fetch file" });
     }
 
-    // Ambil data sebagai buffer
+    const contentType = response.headers.get("content-type") || "";
+    if (contentType.includes("text/html")) {
+      return res.status(500).json({ error: "Bukan link file langsung" });
+    }
+
     const buffer = Buffer.from(await response.arrayBuffer());
 
-    // Ambil content-type asli
-    const contentType = response.headers.get("content-type") || "application/octet-stream";
-
-    // Set header supaya browser download
-    res.setHeader("Content-Type", contentType);
+    res.setHeader("Content-Type", contentType || "application/octet-stream");
     res.setHeader("Content-Length", buffer.length);
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename="${filename || 'file'}"`
+      `attachment; filename="${filename || "file"}"`
     );
 
     res.end(buffer);
