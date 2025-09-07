@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rullz.Downloader</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --card:#1e293b;
+      --accent:#00bfff;
+      --accent-2:#4c1d95;
+      --muted:#cbd5e1;
+      --green:#25D366;
+      --btn:#00bfff;
+    }
+    body { margin:0; font-family:Arial,sans-serif; background:var(--bg); color:white }
+    .sidebar{position:fixed;top:0;left:0;width:220px;height:100vh;background:var(--card);padding:20px;z-index:50;overflow-y:auto;box-shadow:0 8px 24px rgba(2,6,23,.6)}
+    .logo{font-weight:800;color:var(--accent);font-size:18px;margin-bottom:12px}
+    .submenu{padding-left:10px;margin-bottom:8px}
+    .submenu a{display:block;color:var(--muted);text-decoration:none;padding:8px;border-radius:6px;margin-bottom:4px}
+    .submenu a:hover{background:var(--accent);color:#fff}
+    .container{margin-left:240px;padding:28px;max-width:980px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .search-box{background:rgba(255,255,255,.02);border-radius:12px;padding:18px;margin-top:18px;box-shadow:0 6px 20px rgba(0,191,255,.03)}
+    input[type=text]{width:100%;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.04);background:transparent;color:var(--muted);font-size:16px;outline:none}
+    .btn-primary{display:inline-block;background:var(--btn);color:white;padding:12px 16px;border-radius:12px;font-weight:700;text-decoration:none;cursor:pointer;border:none}
+    .card{background:var(--card);padding:18px;border-radius:12px;margin-top:18px;box-shadow:0 8px 30px rgba(0,0,0,.45)}
+    video,img,audio{width:100%;border-radius:10px;display:block;background:#000}
+    .download-btn{display:block;width:100%;text-align:center;background:linear-gradient(90deg,#00bfff,#0066cc);color:white;padding:14px;border-radius:12px;margin-top:12px;font-size:16px;font-weight:700;text-decoration:none}
+    .download-btn--alt{background:linear-gradient(90deg,#25D366,#1aa34a)}
+    .marquee-container{background-color:rgba(255,255,255,.03);color:#fff;padding:6px 10px;border-radius:8px;font-weight:500;margin-top:10px;font-size:13px}
+    @media(max-width:900px){.sidebar{transform:translateX(-100%);position:fixed}.container{margin-left:0;padding:16px}}
+    .muted{color:var(--muted);font-size:13px}
+    .spacer{height:12px}
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="logo">RullkageDg.com</div>
+    <div class="submenu">
+      <a href="#" onclick="scrollToSection('main')">Home</a>
+      <a href="#" onclick="scrollToSection('how')">Cara Pakai</a>
+      <a href="#" onclick="scrollToSection('about')">About</a>
+    </div>
+    <div class="marquee-container"><div class="muted">⚠️ Disclaimer: Gunakan untuk konten legal</div></div>
+  </aside>
+
+  <main class="container">
+    <header>
+      <div>
+        <h1 style="color:var(--accent);margin:0;font-size:22px;">Downloader AIO</h1>
+        <div class="muted">Masukkan link IG / TikTok / Twitter</div>
+      </div>
+      <div class="muted">©Rullz</div>
+    </header>
+
+    <section id="main" class="search-box card">
+      <input id="urlInput" type="text" placeholder="Tempel link di sini...">
+      <div class="spacer"></div>
+      <div style="display:flex;gap:12px;">
+        <button class="btn-primary" onclick="getMedia()">Unduh Link</button>
+        <button class="btn-primary" onclick="openAdmin()">Chat Admin</button>
+      </div>
+      <div class="spacer"></div>
+      <div id="result"></div>
+    </section>
+
+    <section id="how" class="card">
+      <h3 style="color:var(--accent)">Cara Pakai</h3>
+      <ol class="muted" style="text-align:left;padding-left:16px;">
+        <li>Tempel link postingan</li>
+        <li>Klik "Unduh Link"</li>
+        <li>Preview tampil tekan tombol untuk download</li>
+      </ol>
+    </section>
+
+    <section id="about" class="card" style="text-align:left;">
+      <h3 style="color:var(--accent)">Tentang</h3>
+      <p class="muted">Selamat datang di Rullz-download, platform download yang aman, cepat, dan mudah digunakan. Kami hadir untuk memberikan pengalaman terbaik bagi pengguna yang ingin mengunduh berbagai file digital dengan kualitas terjamin.</p>
+    </section>
+  </main>
+
+<script>
+function scrollToSection(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
+function openAdmin(){window.open('https://wa.me/6281234567890','_blank')}
+
+async function getMedia(){
+  const url=document.getElementById('urlInput').value.trim();
+  const result=document.getElementById('result');
+  if(!url){alert('Masukkan link dulu!');return;}
+  result.innerHTML='<div class="muted">Mengambil data...</div>';
+  try{
+    const r=await fetch(`https://api.finix-id.my.id/download/aio?url=${encodeURIComponent(url)}`);
+    const data=await r.json();
+    if(!data||!data.status||!data.result){result.innerHTML='<div class="muted" style="color:#ffcc00">Gagal ambil data.</div>';return;}
+    const medias=data.result.medias||[];
+    let html='';
+    const videos=medias.filter(m=>m.type==='video');
+    if(videos.length){
+      const best=videos.find(v=>/hd_no_watermark/i.test(v.quality))||videos[0];
+      html+=`<div><h4 style="color:var(--accent)">Video</h4>
+      <video controls muted playsinline><source src="${best.url}" type="video/mp4"></video>
+      <a class="download-btn download-btn--alt" href="/api/download?url=${encodeURIComponent(best.url)}&filename=video.mp4">⬇ Download Video</a></div>`;
+    }
+    const images=medias.filter(m=>m.type==='image');
+    if(images.length){html+=`<div><h4 style="color:var(--accent)">Gambar</h4>`;
+      images.forEach((img,i)=>{html+=`<img src="${img.url}" style="margin-top:8px">
+      <a class="download-btn" href="/api/download?url=${encodeURIComponent(img.url)}&filename=image_${i+1}.jpg">⬇ Download Gambar</a>`});
+      html+=`</div>`;
+    }
+    const audios=medias.filter(m=>m.type==='audio'||['mp3','m4a'].includes(m.extension));
+    if(audios.length){html+=`<div><h4 style="color:var(--accent)">Audio</h4>`;
+      audios.forEach((a,i)=>{html+=`<audio controls><source src="${a.url}" type="audio/${a.extension||'mpeg'}"></audio>
+      <a class="download-btn" href="/api/download?url=${encodeURIComponent(a.url)}&filename=audio_${i+1}.${a.extension||'mp3'}">⬇ Download Audio</a>`});
+      html+=`</div>`;
+    }
+    if(!html) html='<div class="muted">Media tidak ditemukan.</div>';
+    result.innerHTML=html;
+  }catch(e){console.error(e);result.innerHTML='<div class="muted" style="color:#ff6b6b">Terjadi error.</div>'}
+}
+</script>
+</body>
+</html>
