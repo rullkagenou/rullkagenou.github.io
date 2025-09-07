@@ -8,6 +8,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Gagal fetch file" });
     }
 
+    // Set header buat download
     res.setHeader(
       "Content-Disposition",
       `attachment; filename="${filename || 'file'}"`
@@ -17,8 +18,8 @@ export default async function handler(req, res) {
       response.headers.get("content-type") || "application/octet-stream"
     );
 
-    const buffer = Buffer.from(await response.arrayBuffer());
-    res.send(buffer);
+
+    response.body.pipe(res);
   } catch (err) {
     res.status(500).json({ error: "Terjadi error", detail: err.message });
   }
