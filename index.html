@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta property="og:title" content="Rullz.Downloader" />
+  <meta property="og:description" content="Downloader by Rullz" />
+  <meta property="og:image" content="https://raw.githubusercontent.com/rullkagenou/RullzUploadArthur/main/uploads/2025-09-16/upload_1758030668399.jpg" />
+  <meta property="og:url" content="https://rullkagenou.github.io" />
+  <meta property="og:type" content="website" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rullz.Downloader</title>
+  <style>
+  #preloader {
+  position: fixed;
+  inset: 0;
+  background: #0f172a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.4s ease;
+}
+.loader {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255,255,255,.2);
+  border-top: 5px solid #00bfff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+  h3 i {
+  margin-right: 6px;
+}
+  .step-icon{
+  width:56px;
+  height:56px;
+  margin:0 auto 10px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+}
+    :root{
+      --bg:#0f172a;
+      --card:#1e293b;
+      --accent:#00bfff;
+      --muted:#cbd5e1;
+      --btn:#00bfff;
+      --danger:#ef4444;
+      --overlay:rgba(0,0,0,.6);
+    }
+    *{box-sizing:border-box}
+    body { margin:0; font-family:Arial,system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:white }
+    .container{padding:28px;max-width:720px;margin:auto}
+    header{text-align:center;margin-bottom:28px}
+    header h1{color:var(--accent);margin:0;font-size:24px}
+    header .muted{color:var(--muted);font-size:14px}
+    .search-box{background:rgba(255,255,255,.02);border-radius:12px;padding:20px;box-shadow:0 6px 20px rgba(0,191,255,.03)}
+    .input-wrapper{position:relative;display:flex;align-items:center}
+    input[type=url],input[type=text]{flex:1;padding:12px 44px 12px 14px;border-radius:10px;border:none;outline:none;background:rgba(255,255,255,.05);color:var(--muted);font-size:16px}
+    .paste-btn{position:absolute;right:8px;background:var(--accent);color:white;border:none;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:14px}
+    .btn-primary{background:var(--btn);color:white;padding:12px 16px;border-radius:10px;font-weight:700;text-decoration:none;cursor:pointer;border:none;text-align:center}
+    .btn-gray{background:#334155;color:white;padding:12px 16px;border-radius:10px;font-weight:700;border:none;cursor:pointer}
+    .btn-green{background:#10b981;color:white;padding:12px 16px;border-radius:10px;font-weight:700;border:none;cursor:pointer}
+  .btn-blue{background:#00bfff;color:#fff;padding:12px 16px;border-radius:10px;font-weight:700;border:none;cursor:pointer;}
+.btn-pink{background:#ec4899;color:#fff;padding:12px 16px; border-radius:10px;font-weight:700;border:none;cursor:pointer;}
+    .btn-amber{background:#f59e0b;color:white;padding:12px 16px;border-radius:10px;font-weight:700;border:none;cursor:pointer}
+    .btn-group{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+    .btn-group .btn-primary{flex:1}
+    .card{background:var(--card);padding:18px;border-radius:12px;margin-top:18px;box-shadow:0 8px 30px rgba(0,0,0,.45)}
+    video,img,audio{width:100%;border-radius:10px;display:block;background:#000}
+    .download-btn{display:block;width:calc(100% - 4px);margin:8px auto 0;text-align:center;background:linear-gradient(90deg,#00bfff,#0066cc);color:white;padding:14px;border-radius:10px;font-size:16px;font-weight:700;text-decoration:none}
+    .muted{color:var(--muted);font-size:13px}
+    .result-title{margin:0 0 8px;color:var(--accent)}
+    .grid{display:grid;gap:12px}
+    .grid-2{grid-template-columns:1fr 1fr}
+    .pill{display:inline-block;font-size:12px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.06);color:#cbd5e1;margin-right:6px}
+    .slider-wrap{position:relative;background:#0b0f1a;border-radius:10px;overflow:hidden}
+    .slider-img{width:100%;display:block;aspect-ratio:9/16;object-fit:contain;background:#000}
+    .nav-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer}
+    .nav-prev{left:8px}
+    .nav-next{right:8px}
+    .counter{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.5);padding:4px 10px;border-radius:999px;font-size:12px}
+    .modal{position:fixed;inset:0;background:var(--overlay);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+    .modal.show{display:flex}
+    .modal-card{background:var(--card);border:1px solid rgba(255,255,255,.08);max-width:420px;width:100%;border-radius:12px;padding:18px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+    .modal-title{margin:0 0 8px;color:#fca5a5}
+    .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:12px}
+    .btn-danger{background:var(--danger);color:#fff;border:none;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
+    .status{margin-top:10px;font-size:13px}
+    .spinner{display:inline-block;width:18px;height:18px;border:3px solid rgba(255,255,255,.25);border-top-color:#38bdf8;border-radius:50%;animation:spin 1s linear infinite;vertical-align:-4px;margin-right:8px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+body.light-mode {
+  --bg:#f9fafb;
+  --card:#ffffff;
+  --accent:#2563eb;
+  --muted:#475569;
+  --btn:#2563eb;
+  --danger:#dc2626;
+  --overlay:rgba(0,0,0,.4);
+  color:#111; 
+}
+
+body.light-mode header h1 { color: var(--accent); }
+body.light-mode .muted { color: var(--muted); }
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 10px #00f7ff, 0 0 20px #00f7ff; }
+  50%      { box-shadow: 0 0 30px #00f7ff, 0 0 60px #00f7ff; }
+}
+
+.banner {
+  width: 100%;
+  height: auto;
+  display: block;
+  animation: glow 2s infinite alternate;
+}
+  </style>
+</head>
+<body>
+  <!-- Preloader -->
+  <div id="preloader">
+    <div class="loader"></div>
+  </div>
+  <main class="container">
+    <header>
+      <h1>Downloader - Rullz</h1>
+      <div class="muted">Masukkan link TikTok (video / slide foto)</div>
+      <img class="banner"
+     src="https://raw.githubusercontent.com/rullkagenou/RullzUploadArthur/main/uploads/2025-09-07/upload_1757241399853.jpg"
+     alt="Banner"
+     style="width:100%;height:auto;display:block;">
+      <!-- Views & Battery Info -->
+<div style="display:flex;justify-content:center;gap:24px;margin-top:8px;font-size:14px;color:var(--muted)">
+  <div id="viewsInfo">
+    <i class="fa-solid fa-eye"></i> <span id="viewsCount">0</span> 
+  </div>
+  <div id="batteryInfo">
+    <i class="fa-solid fa-battery-full"></i> <span id="batteryLevel">100%</span>
+  </div>
+</div>
+    </header>
+
+    <section class="search-box card">
+      <div class="input-wrapper">
+        <input id="urlInput" type="url" placeholder="Tempel link TikTok di sini..." autocomplete="off">
+<button class="paste-btn" onclick="pasteClipboard()">
+  <i class="fa-solid fa-paste"></i>
+</button>
+      </div>
+      <div class="btn-group">
+<button id="submitBtn" class="btn-primary" onclick="handleSubmit()">
+  <i class="fa-solid fa-download"></i> Unduh
+</button>
+<button class="btn-primary" onclick="openAdmin()">
+ <i class="fa-solid fa-comment-dots"></i>  Chat Admin
+</button>
+      </div>
+      <div id="statusMessage" class="status muted" style="display:none"></div>
+      <div id="result" style="margin-top:16px"></div>
+    </section>
+
+<section class="card">
+  <h3 style="color:var(--accent)">Cara Mengunduh</h3>
+  <div class="grid" style="margin-top:12px;gap:18px">
+    
+    <div style="text-align:center">
+      <div class="step-icon" style="background:rgba(0,191,255,.15);color:var(--accent)">
+        <i class="fa-solid fa-link"></i>
+      </div>
+      <h4 style="margin:0;font-size:16px;color:white">1. Salin Tautan</h4>
+      <p class="muted" style="margin:6px 0 0">Buka TikTok, klik 'Bagikan', lalu pilih 'Salin Tautan'.</p>
+    </div>
+
+    <div style="text-align:center">
+      <div class="step-icon" style="background:rgba(245,158,11,.15);color:#f59e0b">
+        <i class="fa-solid fa-paste"></i>
+      </div>
+      <h4 style="margin:0;font-size:16px;color:white">2. Tempel Tautan</h4>
+      <p class="muted" style="margin:6px 0 0">Tempel link ke kolom input di atas.</p>
+    </div>
+
+    <div style="text-align:center">
+      <div class="step-icon" style="background:rgba(16,185,129,.2);color:#10b981">
+        <i class="fa-solid fa-cloud-arrow-down"></i>
+      </div>
+      <h4 style="margin:0;font-size:16px;color:white">3. Unduh</h4>
+      <p class="muted" style="margin:6px 0 0">Tekan tombol <b>Unduh</b>, lalu pilih format yang kamu mau.</p>
+    </div>
+
+  </div>
+</section>
+
+<section class="card">
+  <h3 style="color:var(--accent)">
+    <i class="fa-solid fa-circle-info"></i> Tentang
+  </h3>
+  <p class="muted">
+    Rullz Downloader — simpel & cepat. Sekarang pakai fallback multi-API biar jarang mogok.
+  </p>
+</section>
+
+  <!-- Modal Error -->
+  <div id="errorModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <h3 id="modalTitle" class="modal-title">Gagal Mengunduh</h3>
+      <p id="modalMessage" class="muted">Yah, ada yang error.</p>
+      <div class="modal-actions">
+        <button class="btn-danger" onclick="closeModal()">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+<!--Config & Utils-->
+const API_ENDPOINTS = [
+  'https://www.tikwm.com/api/?url=', 
+  'https://vapis.my.id/api/ttdl?url=',
+  'https://api.vreden.web.id/api/tiktok?url='
+];
+
+function openAdmin(){
+  window.open("https://wa.me/6283892730732?text=Bang%20Rullz%20web%20nya%20eror", "_blank", "rel=noopener noreferrer");
+}
+async function pasteClipboard(){
+  try{
+    const text = await navigator.clipboard.readText();
+    if(text) document.getElementById('urlInput').value = text.trim();
+    else showModal('Clipboard kosong atau tidak ada link yang disalin.');
+  }catch(e){
+    showModal('Gagal akses clipboard, tempel manual (CTRL/⌘+V).');
+  }
+}
+
+function setStatus(msg, color='#cbd5e1', spin=false){
+  const el = document.getElementById('statusMessage');
+  el.style.display = msg ? 'block' : 'none';
+  el.style.color = color;
+  el.innerHTML = msg ? (spin ? `<span class="spinner"></span>${msg}` : msg) : '';
+}
+
+function showModal(message){
+  document.getElementById('modalMessage').textContent = message;
+  document.getElementById('errorModal').classList.add('show');
+}
+function closeModal(){
+  document.getElementById('errorModal').classList.remove('show');
+}
+
+function disableBtn(disabled){
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = disabled;
+  btn.textContent = disabled ? 'Memproses...' : 'Unduh';
+}
+
+<!--Submit Flow-->
+async function handleSubmit(){
+  const url = document.getElementById('urlInput').value.trim();
+  const result = document.getElementById('result');
+
+  if(!url){ showModal('Masukkan URL TikTok yang valid.'); return; }
+
+  result.innerHTML = '';
+  setStatus('Memproses tautan, mohon tunggu...', '#cbd5e1', true);
+  disableBtn(true);
+
+  let responseData = null;
+
+  for (let i=0;i<API_ENDPOINTS.length;i++){
+    const api = API_ENDPOINTS[i];
+    try{
+      setStatus(`Mencoba server #${i+1}...`, '#facc15', true);
+      const data = await fetchApi(api + encodeURIComponent(url));
+      const parsed = parseApiResponse(data, api);
+      if(parsed){ responseData = parsed; break; }
+    }catch(e){
+      console.warn('API error', api, e);
+    }
+  }
+
+  disableBtn(false);
+  if(!responseData){
+    setStatus('');
+    showModal('Konten tidak bisa diunduh saat ini. Coba link lain atau ulangi beberapa saat lagi.');
+    return;
+  }
+
+  setStatus('');
+  renderResult(responseData);
+}
+
+<!---Fetch & Parse--->
+async function fetchApi(apiUrl){
+  const res = await fetch(apiUrl);
+  if(!res.ok) throw new Error(`HTTP ${res.status}`);
+  const json = await res.json().catch(()=>{throw new Error('Invalid JSON')});
+  return json;
+}
+
+function parseApiResponse(data, apiUrl){
+  // tikwm.com
+  if(apiUrl.includes('tikwm.com')){
+    if(data && data.code === 0 && data.data){
+      return {
+        type: data.data.images ? 'slider' : 'video',
+        title: data.data.title,
+        author: data.data.author?.unique_id,
+        cover: data.data.cover,
+        noWatermarkUrl: data.data.play,
+        watermarkUrl: data.data.wmplay,
+        musicUrl: data.data.music,
+        images: data.data.images || null
+      };
+    }
+  }
+  // vapis.my.id
+  if(apiUrl.includes('vapis.my.id')){
+    if(data && data.status === 'success' && data.result){
+      return {
+        type: data.result.images?.length ? 'slider' : 'video',
+        title: data.result.title,
+        author: data.result.author?.unique_id,
+        cover: data.result.cover,
+        noWatermarkUrl: data.result.video?.no_watermark,
+        watermarkUrl: data.result.video?.watermark,
+        musicUrl: data.result.audio,
+        images: data.result.images || null
+      };
+    }
+  }
+  // vreden.web.id
+  if(apiUrl.includes('vreden.web.id')){
+    if(data && data.status && data.result){
+      const nowm = data.result.data?.find(x=>x.type==='nowatermark')?.url;
+      const wm   = data.result.data?.find(x=>x.type==='watermark')?.url;
+      return {
+        type: data.result.images?.length ? 'slider' : 'video',
+        title: data.result.title,
+        author: data.result.author?.fullname || data.result.author?.unique_id,
+        cover: data.result.cover,
+        noWatermarkUrl: nowm,
+        watermarkUrl: wm,
+        musicUrl: data.result.music_info?.url,
+        images: data.result.images || null
+      };
+    }
+  }
+  return null;
+}
+
+/* ====== Render Result ====== */
+function renderResult(data){
+  if(data.type === 'slider' && Array.isArray(data.images) && data.images.length){
+    renderSlider(data);
+  }else{
+    renderVideo(data);
+  }
+}
+
+function renderVideo(data){
+  const result = document.getElementById('result');
+  const playable = data.noWatermarkUrl || data.watermarkUrl;
+  if(!playable){ showModal('Tidak ada tautan video yang bisa diputar.'); return; }
+
+  const html = `
+    <div class="card">
+      <h4 class="result-title">Video</h4>
+      <div>
+        <video id="videoPlayer" controls playsinline poster="${data.cover || ''}">
+          <source src="${playable}" type="video/mp4">
+        </video>
+        <div style="margin-top:8px">
+          ${data.title ? `<span class="pill">${escapeHtml(truncate(data.title, 80))}</span>`:''}
+          ${data.author ? `<span class="pill">@${escapeHtml(data.author)}</span>`:''}
+        </div>
+        <div class="grid grid-2" style="margin-top:10px">
+          ${downloadBtnTpl('Tanpa Watermark','btn-blue','noWatermarkBtn', !!data.noWatermarkUrl)}
+          ${downloadBtnTpl('Dengan Watermark','btn-pink','wmBtn', !!data.watermarkUrl)}
+          ${downloadBtnTpl('Unduh Musik','btn-primary','musicBtn', !!data.musicUrl)}
+          ${downloadBtnTpl('Unduh Thumbnail','btn-amber','coverBtn', !!data.cover)}
+        </div>
+      </div>
+    </div>`;
+  result.innerHTML = html;
+
+  setupDownload('noWatermarkBtn', data.noWatermarkUrl, 'mp4');
+setupDownload('wmBtn', data.watermarkUrl, 'mp4');
+setupDownload('musicBtn', data.musicUrl, 'mp3');
+setupDownload('coverBtn', data.cover, 'jpg');
+}
+
+function renderSlider(data){
+  const result = document.getElementById('result');
+  const html = `
+    <div class="card">
+      <h4 class="result-title">Slide Foto</h4>
+      <div>
+        <div style="margin-bottom:8px">
+          ${data.title ? `<span class="pill">${escapeHtml(truncate(data.title, 80))}</span>`:''}
+          ${data.author ? `<span class="pill">@${escapeHtml(data.author)}</span>`:''}
+        </div>
+
+        <div class="slider-wrap">
+          <img id="sliderImg" class="slider-img" src="${data.images[0]}" alt="slide 1">
+          <button class="nav-btn nav-prev" id="prevBtn" aria-label="Sebelumnya">‹</button>
+          <button class="nav-btn nav-next" id="nextBtn" aria-label="Berikutnya">›</button>
+          <div class="counter" id="counter">1 / ${data.images.length}</div>
+        </div>
+
+        <div class="grid grid-2" style="margin-top:10px">
+          ${downloadBtnTpl('Unduh Foto Ini','btn-green','dlCurrentBtn', true)}
+          ${downloadBtnTpl('Unduh Semua Foto','btn-primary','dlAllBtn', true)}
+          ${downloadBtnTpl('Unduh Musik','btn-amber','dlMusicBtn', !!data.musicUrl)}
+        </div>
+      </div>
+    </div>`;
+  result.innerHTML = html;
+
+  // slider logic
+  let idx = 0;
+  const images = data.images.slice();
+  const imgEl = document.getElementById('sliderImg');
+  const counter = document.getElementById('counter');
+  document.getElementById('prevBtn').onclick = ()=>{
+    if(idx>0){ idx--; update(); }
+  };
+  document.getElementById('nextBtn').onclick = ()=>{
+    if(idx<images.length-1){ idx++; update(); }
+  };
+  function update(){
+    imgEl.src = images[idx];
+    counter.textContent = `${idx+1} / ${images.length}`;
+  }
+
+  // downloads
+  document.getElementById('dlCurrentBtn').onclick = ()=>{
+    startBlobDownload(images[idx], `image_${idx+1}.jpeg`, document.getElementById('dlCurrentBtn'));
+  };
+  document.getElementById('dlAllBtn').onclick = async ()=>{
+    const btn = document.getElementById('dlAllBtn');
+    btn.disabled = true; const old = btn.textContent; btn.textContent = 'Memproses...';
+    for(let i=0;i<images.length;i++){
+      await startBlobDownload(images[i], `image_${i+1}.jpeg`, btn, true);
+      await sleep(250);
+    }
+    btn.disabled = false; btn.textContent = old;
+  };
+  setupDownload('dlMusicBtn', data.musicUrl, 'music.mp3');
+}
+
+function downloadBtnTpl(label, cls, id, visible){
+  if(!visible) return `<button id="${id}" class="${cls}" style="display:none">${label}</button>`;
+  return `<button id="${id}" class="${cls}">${label}</button>`;
+}
+
+<!---Download Helpers--->
+// helper random string
+function randomString(len=6){
+  return Math.random().toString(36).substring(2, 2+len);
+}
+
+function setupDownload(id, url, defaultExt=''){
+  const btn = document.getElementById(id);
+  if(!btn) return;
+  if(!url){ btn.style.display='none'; return; }
+  btn.onclick = ()=> startBlobDownload(url, defaultExt, btn);
+}
+
+async function startBlobDownload(url, defaultExt='', btn, silent=false){
+  if(!url){ showModal('Tautan unduhan tidak tersedia.'); return; }
+  const old = btn.innerHTML;
+  if(!silent){ btn.disabled = true; btn.innerHTML = 'Memproses...'; }
+  try{
+    const res = await fetch(url,{mode:'cors'});
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const blob = await res.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    const ext = defaultExt || 'file';
+    a.download = `${ext}_${randomString()}.${ext.includes('.') ? ext.split('.').pop() : ext}`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(blobUrl);
+  }catch(e){
+    console.error('Download error:', e);
+    showModal('Gagal mengunduh file. Coba tekan lama/klik kanan dan pilih "Simpan tautan sebagai..."');
+  }finally{
+    if(!silent){ btn.disabled = false; btn.innerHTML = old; }
+  }
+}
+
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+function truncate(s, n){ return s && s.length>n ? s.slice(0,n-1)+'…' : s; }
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g,m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
+/* === Battery Info === */
+if (navigator.getBattery) {
+  navigator.getBattery().then(function(battery) {
+    function updateBattery() {
+      let level = Math.round(battery.level * 100);
+      document.getElementById("batteryLevel").textContent = level + "%";
+
+      let icon = "fa-battery-empty";
+      if (level > 80) icon = "fa-battery-full";
+      else if (level > 60) icon = "fa-battery-three-quarters";
+      else if (level > 40) icon = "fa-battery-half";
+      else if (level > 20) icon = "fa-battery-quarter";
+
+      document.querySelector("#batteryInfo i").className = "fa-solid " + icon;
+    }
+    updateBattery();
+    battery.addEventListener("levelchange", updateBattery);
+    battery.addEventListener("chargingchange", updateBattery);
+  });
+}
+(function(){
+  const now = Date.now();
+  const lastTime = localStorage.getItem("lastViewTime");
+  let count = localStorage.getItem("viewsCount");
+
+  count = count ? parseInt(count, 10) : 0;
+  if (!lastTime || (now - parseInt(lastTime, 10)) > 10000) {
+    count += 1;
+    localStorage.setItem("viewsCount", count);
+    localStorage.setItem("lastViewTime", now);
+  }
+  document.getElementById("viewsCount").textContent = count.toLocaleString();
+})();
+(function(){
+  const now = new Date();
+  const today = now.getDate(); 
+  const lastReset = localStorage.getItem("lastResetDate");
+  if (today === 1 && lastReset !== now.toDateString()) {
+    localStorage.setItem("viewsCount", 0);
+    localStorage.setItem("lastResetDate", now.toDateString());
+  }
+})();
+</script>
+<script>
+window.addEventListener("load", function(){
+  const pre = document.getElementById("preloader");
+  pre.style.opacity = "0";
+  setTimeout(()=> pre.style.display = "none", 400);
+});
+</script>
+<!-- Dark/Light Toggle -->
+<button id="themeToggle"
+  style="position:fixed;bottom:16px;right:16px;
+         background:var(--accent);color:#fff;
+         border:none;padding:12px 14px;
+         border-radius:50%;cursor:pointer;z-index:9999">
+  <i class="fa-solid fa-moon"></i>
+</button>
+<script>
+const toggleBtn = document.getElementById("themeToggle");
+const icon = toggleBtn.querySelector("i");
+
+<!--cek preferensi tersimpan-->
+if(localStorage.getItem("theme") === "light"){
+  document.body.classList.add("light-mode");
+  icon.classList.replace("fa-moon","fa-sun");
+}
+
+toggleBtn.addEventListener("click", ()=>{
+  document.body.classList.toggle("light-mode");
+  const isLight = document.body.classList.contains("light-mode");
+  icon.classList.replace(isLight ? "fa-moon" : "fa-sun", isLight ? "fa-sun" : "fa-moon");
+  localStorage.setItem("theme", isLight ? "light" : "dark");
+});
+</script>
+</body>
+</html>
